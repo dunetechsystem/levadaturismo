@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, motion, useInView } from "motion/react";
+import { motion, useInView } from "motion/react";
 
 // Uma onda de período 100 desenhada duas vezes num viewBox de 200: deslizando -50% ela emenda sem corte.
 const WAVE = "M0 10 Q25 2 50 10 T100 10 T150 10 T200 10 V20 H0Z";
@@ -43,15 +43,30 @@ export function WaterLevel({ level, delay = 0 }: { level: number; delay?: number
   );
 }
 
-/** Porcentagem contando de 0 até o nível, no mesmo ritmo da água. */
+/**
+ * Porcentagem contando de 0 até o nível, no mesmo ritmo da água. Conta no próprio requestAnimationFrame e um
+ * timer garante o número final: no iPhone o contador ficava em 0% quando a animação não chegava a rodar.
+ */
 export function LevelCount({ level, delay = 0 }: { level: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [n, setN] = useState(0);
   useEffect(() => {
     if (!inView) return;
-    const controls = animate(0, level, { duration: 2.4, delay, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => setN(Math.round(v)) });
-    return () => controls.stop();
+    const duration = 2400;
+    const start = performance.now() + delay * 1000;
+    let frame = 0;
+    const tick = (now: number) => {
+      const t = Math.min(1, Math.max(0, (now - start) / duration));
+      setN(Math.round(level * (1 - Math.pow(1 - t, 4))));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    const done = setTimeout(() => setN(level), delay * 1000 + duration + 200);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(done);
+    };
   }, [inView, level, delay]);
   return (
     <span ref={ref} className="tabular-nums">
