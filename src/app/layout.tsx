@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: site.name,
-    images: [{ url: "/fotos/lencois-maranhenses.jpg", alt: "Lençóis Maranhenses com a Levada Turismo" }],
+    // Imagem do compartilhamento (logo da Levada): app/opengraph-image.png e twitter-image.png.
   },
   verification: { google: "zXRSCMq1coLXxMh9blzdIbsiBQ1luRjxD_FSLmC4pAo" },
 };
