@@ -57,10 +57,21 @@ export const site = {
   },
 
   /**
-   * Reels/posts do Instagram (URL do reel ou post) pra seção "Diário de bordo". Vazio = a seção mostra
-   * uma grade com as fotos dos passeios, levando pro perfil.
+   * Posts/reels do Instagram (URL do post ou reel — da Levada ou de quem viajou com ela) pra faixa "Quem já viajou
+   * com a Levada", embaixo do perfil. Vazio = sem a faixa.
    */
-  instagramReels: [] as string[],
+  instagramReels: [
+    "https://www.instagram.com/s_eduarda45/reel/DD9xSQsu76R/",
+    "https://www.instagram.com/maurileia_santos/reel/DEc1nqNOB3b/",
+    "https://www.instagram.com/levada_turismo/p/DBtWKJquZNQ/",
+    "https://www.instagram.com/clarice_guia/reel/DI-JXJKN02K/",
+    "https://www.instagram.com/levada_turismo/p/C60zQQuux0z/",
+    "https://www.instagram.com/levada_turismo/p/CeUEpLjuy8o/",
+    "https://www.instagram.com/levada_turismo/p/CdhQjUMsaVw/",
+  ] as string[],
+
+  /** true = embed oficial do perfil (últimos 6 posts reais, atualiza sozinho); false = grade com as fotos dos passeios. */
+  instagramProfileEmbed: true,
 
   /** Compra pelo site está desligada: o "Minha viagem" junta tudo e finaliza no WhatsApp. */
   onlineBooking: false,

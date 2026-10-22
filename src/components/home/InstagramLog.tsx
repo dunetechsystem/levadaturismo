@@ -3,6 +3,7 @@ import { Heart } from "lucide-react";
 import { site } from "@/config/site";
 import { InstagramIcon } from "@/components/ui/Icons";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { InstagramProfileEmbed } from "./InstagramProfileEmbed";
 
 /** "https://www.instagram.com/reel/ABC123/?igsh=…" → URL do embed oficial. */
 function embedUrl(url: string) {
@@ -12,14 +13,16 @@ function embedUrl(url: string) {
 }
 
 /**
- * "Diário de bordo": cartão de perfil do Instagram ao lado dos reels (config) ou, sem reels, de uma
- * grade 3×3 com as fotos dos passeios — cada quadradinho leva pro perfil.
+ * "Diário de bordo": cartão de perfil do Instagram ao lado do embed oficial do perfil (os posts reais mais recentes)
+ * ou de uma grade 3×3 com as fotos dos passeios; embaixo, a faixa "Quem já viajou com a Levada" com os posts/reels
+ * escolhidos no config (de clientes, guias ou da própria Levada).
  */
 export function InstagramLog({ instagram, photos, tourCount }: { instagram: string; photos: string[]; tourCount: number }) {
   const profile = `https://instagram.com/${instagram}`;
   const reels = site.instagramReels.map(embedUrl).filter((u): u is string => !!u);
   const grid = photos.slice(0, 9);
-  if (!reels.length && grid.length < 3) return null;
+  if (!reels.length && !site.instagramProfileEmbed && grid.length < 3) return null;
+  // Coluna da direita: o perfil (embed oficial) ou a grade de fotos; os posts/reels do config vão numa faixa embaixo.
 
   return (
     <section id="instagram" className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
@@ -59,19 +62,10 @@ export function InstagramLog({ instagram, photos, tourCount }: { instagram: stri
           </a>
         </FadeIn>
 
-        {reels.length ? (
-          <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2">
-            {reels.map((src) => (
-              <iframe
-                key={src}
-                src={src}
-                title="Reel da Levada Turismo"
-                loading="lazy"
-                allow="encrypted-media; picture-in-picture"
-                className="h-[34rem] w-[19rem] shrink-0 snap-start overflow-hidden rounded-[1.5rem] border-0 bg-white ring-1 ring-ocean-900/10"
-              />
-            ))}
-          </div>
+        {site.instagramProfileEmbed ? (
+          <FadeIn>
+            <InstagramProfileEmbed handle={instagram} />
+          </FadeIn>
         ) : (
           <div className="grid grid-cols-3 gap-1.5 sm:gap-3">
             {grid.map((src, i) => (
@@ -87,6 +81,28 @@ export function InstagramLog({ instagram, photos, tourCount }: { instagram: stri
           </div>
         )}
       </div>
+
+      {reels.length > 0 && (
+        <div className="mt-16">
+          <h3 className="font-display text-3xl font-semibold">
+            Quem já viajou <em>com a Levada</em>
+          </h3>
+          <p className="mt-2 text-ocean-950/60">Posts e reels de quem passou por aqui. Arraste pro lado.</p>
+          <div className="no-scrollbar -mx-4 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6">
+            {reels.map((src) => (
+              <iframe
+                key={src}
+                src={src}
+                title="Post do Instagram"
+                loading="lazy"
+                scrolling="no"
+                allow="encrypted-media; picture-in-picture"
+                className="h-[37.5rem] w-[19rem] shrink-0 snap-start overflow-hidden rounded-[1.5rem] border-0 bg-white ring-1 ring-ocean-900/10"
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
