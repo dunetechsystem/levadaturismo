@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* Paleta da Levada: os azuis das ondas da logo (do céu ao marinho), o cinza-azulado da vela e a areia
+   das dunas como fundo. O "sol" é o único quente — reservado pra preço e destaque. */
+@theme {
+  --color-sand-50: #fdfbf7;
+  --color-sand-100: #f8f3ea;
+  --color-sand-200: #efe5d3;
+  --color-sand-300: #e2d2b5;
+
+  --color-ocean-100: #e3f3fc;
+  --color-ocean-200: #bfe4f8;
+  --color-ocean-300: #7ccaf1;
+  --color-ocean-400: #2aa9e8;
+  --color-ocean-500: #0a8fd8;
+  --color-ocean-600: #0873bb;
+  --color-ocean-700: #0b5a98;
+  --color-ocean-800: #0c4277;
+  --color-ocean-900: #0a2d55;
+  --color-ocean-950: #061b35;
+
+  --color-sail-400: #6f8aa9;
+  --color-sail-500: #4a6a8f;
+  --color-sail-600: #3a5677;
+
+  --color-sun-400: #ffbe4d;
+  --color-sun-500: #f5a316;
+
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-fraunces);
+
+  --animate-drift: drift 14s ease-in-out infinite;
+  --animate-tide: tide 9s ease-in-out infinite;
+  --animate-bob: bob 5s ease-in-out infinite;
+  --animate-wave-slow: wave-x 7s linear infinite;
+  --animate-wave-fast: wave-x 4s linear infinite reverse;
+  --animate-bubble: bubble 3.6s ease-in infinite;
+
+  @keyframes drift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-3%); }
+  }
+  @keyframes tide {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+  /* Crista da água das estações: o SVG tem duas ondas, então -50% emenda sem corte. */
+  @keyframes wave-x {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes bubble {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 0.9; }
+    100% { transform: translateY(-90px) scale(1.2); opacity: 0; }
+  }
+  /* O barquinho da logo balançando. */
+  @keyframes bob {
+    0%, 100% { transform: rotate(-2deg) translateY(0); }
+    50% { transform: rotate(2deg) translateY(-4px); }
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+body {
+  background: var(--color-sand-50);
+  color: var(--color-ocean-950);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-ocean-500);
+  color: #fff;
+}
+
+/* Palavra em destaque nos títulos: itálico em azul, como a assinatura "Levada" da logo. */
+.font-display em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--color-ocean-500);
+}
+.on-dark .font-display em,
+.font-display.on-dark em {
+  color: var(--color-ocean-300);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Recorte do "canhoto" dos cards de passeio (o picote de um bilhete de barco). */
+@utility ticket-notch {
+  mask: radial-gradient(circle at 0 50%, transparent 10px, #000 10.5px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 10px, #000 10.5px) right / 51% 100% no-repeat;
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, var(--color-sand-100) 25%, var(--color-sand-200) 50%, var(--color-sand-100) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
