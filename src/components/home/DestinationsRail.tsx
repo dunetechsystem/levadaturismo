@@ -35,7 +35,7 @@ export function DestinationsRail({ tours }: { tours: TourCard[] }) {
                 {related.length > 0 && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {related.map((t) => (
-                      <Link key={t.id} href={`/passeios/${t.id}`} className="rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur transition hover:bg-white hover:text-ocean-900">
+                      <Link key={t.id} href={`/passeios/${t.slug ?? t.id}`} className="rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur transition hover:bg-white hover:text-ocean-900">
                         {displayTitle(t.title)} →
                       </Link>
                     ))}

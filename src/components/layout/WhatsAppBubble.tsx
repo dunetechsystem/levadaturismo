@@ -27,7 +27,7 @@ export function WhatsAppBubble({ phone }: { phone: string }) {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-30 flex items-end gap-3">
+    <div className="fixed bottom-[calc(1.25rem+var(--dock,0px))] right-5 z-30 flex items-end gap-3 transition-[bottom] duration-300">
       <AnimatePresence>
         {hint && (
           <motion.button

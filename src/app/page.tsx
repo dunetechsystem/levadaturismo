@@ -23,7 +23,8 @@ import { getGallery } from "@/lib/dunastour/gallery";
 import { ComboCard } from "@/components/tour/TicketCard";
 import { Heading } from "@/components/ui/Heading";
 import { WhatsAppIcon } from "@/components/ui/Icons";
-import { whatsappUrl } from "@/lib/format";
+import { tourUnitPrice, whatsappUrl } from "@/lib/format";
+import { reviewItems, reviewSummary } from "@/lib/reviews";
 
 export const revalidate = 300;
 
@@ -36,6 +37,13 @@ export default async function Home() {
   // A prévia da galeria usa as 8 primeiras; a grade do Instagram pega as seguintes pra não repetir.
   const photos = mixGallery(gallery).filter((g) => !g.video);
   const igPhotos = photos.slice(8).map((g) => g.url);
+  // Preço de entrada do hero: o passeio por pessoa mais barato (veículo e transfer não comparam).
+  const perPerson = tours
+    .filter((t) => (!t.saleUnit || t.saleUnit === "PESSOA") && !(t.transferFrom && t.transferTo))
+    .map(tourUnitPrice)
+    .filter((p) => p > 0);
+  const minPrice = perPerson.length ? Math.min(...perPerson) : null;
+  const rating = reviewSummary(reviews, reviewItems(reviews, agency?.checkoutPage));
   const faqs = agency?.checkoutPage?.faqs.length ? [...agency.checkoutPage.faqs, ...site.faqs] : site.faqs;
 
   return (
@@ -46,6 +54,9 @@ export default async function Home() {
         lagoonLevel={lagoons?.level ?? null}
         temperature={lagoons?.current?.temperature ?? null}
         cadasturUrl={info.cadasturUrl}
+        minPrice={minPrice}
+        rating={rating}
+        phone={info.phone}
       />
       <PromiseStrip />
 
@@ -84,7 +95,7 @@ export default async function Home() {
         )}
       </section>
 
-      <KayakSpotlight tour={kayak} phone={info.phone} />
+      <KayakSpotlight tour={kayak} slug={kayakCard?.slug} phone={info.phone} />
       <DestinationsRail tours={tours} />
       <RoteirosShowcase />
       <ServicesDuo />

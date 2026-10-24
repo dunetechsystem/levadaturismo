@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppBubble } from "@/components/layout/WhatsAppBubble";
 import { TripDrawer } from "@/components/trip/TripDrawer";
+import { Analytics } from "@/components/layout/Analytics";
 
 // Fraunces = títulos (serifada macia, com itálico que lembra a assinatura da logo); Manrope = texto.
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap", axes: ["SOFT", "opsz"] });
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <SiteFooter info={info} />
         <WhatsAppBubble phone={info.phone} />
         {cartEnabled && <TripDrawer phone={info.phone} />}
+        <Analytics />
       </body>
     </html>
   );

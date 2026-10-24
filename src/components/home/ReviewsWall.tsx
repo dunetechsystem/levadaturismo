@@ -1,16 +1,13 @@
 import { Star } from "lucide-react";
 import type { AgencyPublicReviews, CheckoutPageContent } from "@/lib/dunastour/types";
-import { displayTitle } from "@/lib/format";
+import { reviewItems } from "@/lib/reviews";
 import { Heading } from "@/components/ui/Heading";
 import { FadeIn } from "@/components/ui/FadeIn";
 
 /** Avaliações dos clientes no DunasTour + as do Google que a agência colou no painel. Some se não houver. */
 export function ReviewsWall({ reviews, page }: { reviews: AgencyPublicReviews | null; page: CheckoutPageContent | null | undefined }) {
-  const items = [
-    ...(reviews?.items ?? []).map((r) => ({ name: r.touristName, rating: r.rating, text: r.comment, about: displayTitle(r.tourTitle) })),
-    ...(page?.googleReviews ?? []).map((r) => ({ name: r.author, rating: r.rating, text: r.text, about: "Google" })),
-  ].filter((r) => r.text?.trim());
-  if (!items.length || page?.showReviews === false) return null;
+  const items = reviewItems(reviews, page);
+  if (!items.length) return null;
   return (
     <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
       <Heading

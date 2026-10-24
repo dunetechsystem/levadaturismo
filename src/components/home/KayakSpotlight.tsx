@@ -21,7 +21,7 @@ function timeline(description: string) {
  * Destaque do caiaque: o Shorts do YouTube num quadro vertical e, ao lado, o roteiro por horário,
  * fotos e o preço que vêm do passeio no DunasTour.
  */
-export function KayakSpotlight({ tour, phone }: { tour: TourDetail | null; phone: string }) {
+export function KayakSpotlight({ tour, slug, phone }: { tour: TourDetail | null; slug?: string; phone: string }) {
   const k = site.kayak;
   const steps = tour ? timeline(tour.description) : [];
   return (
@@ -108,12 +108,13 @@ export function KayakSpotlight({ tour, phone }: { tour: TourDetail | null; phone
               </div>
             )}
             {tour ? (
-              <Link href={`/passeios/${tour.id}#reservar`} className="group flex items-center gap-2 rounded-full bg-white px-7 py-4 font-bold text-ocean-900 transition hover:bg-ocean-100">
+              <Link href={`/passeios/${slug ?? tour.id}#reservar`} className="group flex items-center gap-2 rounded-full bg-white px-7 py-4 font-bold text-ocean-900 transition hover:bg-ocean-100">
                 Escolher a data <ArrowRight size={18} className="transition group-hover:translate-x-1" />
               </Link>
             ) : null}
             <a
               href={whatsappUrl(phone, "Olá, Levada Turismo! Quero fazer a descida de caiaque pelo Rio Preguiças 🛶")}
+              data-lead="caiaque"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 rounded-full border-2 border-white/25 px-6 py-3.5 font-bold transition hover:border-[#25D366] hover:bg-[#25D366]"

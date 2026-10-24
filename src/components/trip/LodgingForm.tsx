@@ -5,6 +5,7 @@ import { site } from "@/config/site";
 import { useCart } from "@/lib/cart";
 import { lodgingLines, useTrip, type LodgingRequest } from "@/lib/trip";
 import { todayISO, whatsappUrl } from "@/lib/format";
+import { track } from "@/lib/track";
 import { Counter } from "@/components/ui/Counter";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { cn } from "@/lib/cn";
@@ -53,6 +54,7 @@ export function LodgingForm({ phone, initialType }: { phone: string; initialType
           disabled={!ok}
           onClick={() => {
             setLodging(l);
+            track("AddToCart", { item: "hospedagem" });
             openTrip(true);
           }}
           className="rounded-full bg-ocean-600 py-3.5 font-bold text-white transition hover:bg-ocean-700 disabled:opacity-40"
@@ -61,6 +63,7 @@ export function LodgingForm({ phone, initialType }: { phone: string; initialType
         </button>
         <a
           href={ok ? whatsappUrl(phone, message) : undefined}
+          data-lead="hospedagem"
           target="_blank"
           rel="noreferrer"
           aria-disabled={!ok}

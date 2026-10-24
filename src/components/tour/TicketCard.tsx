@@ -15,7 +15,7 @@ export function TicketCard({ tour, priority = false, wide = false }: { tour: Tou
   const kind = TOUR_KINDS.find((k) => k.id === tourKind(tour))!;
   return (
     <Link
-      href={`/passeios/${tour.id}`}
+      href={`/passeios/${tour.slug ?? tour.id}`}
       className={cn(
         "group flex h-full overflow-hidden rounded-[1.75rem] bg-white shadow-[0_20px_50px_-30px_rgba(6,27,53,.45)] ring-1 ring-ocean-900/8 transition duration-500 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgba(8,115,187,.55)]",
         wide ? "flex-col md:flex-row" : "flex-col"
@@ -84,7 +84,7 @@ export function TicketCard({ tour, priority = false, wide = false }: { tour: Tou
 /** Pacote cadastrado no DunasTour (combo de passeios com desconto). */
 export function ComboCard({ pkg }: { pkg: PackageCard }) {
   return (
-    <Link href={`/pacotes/${pkg.id}`} className="group relative flex min-h-72 overflow-hidden rounded-[1.75rem] bg-ocean-900 text-white">
+    <Link href={`/pacotes/${pkg.slug ?? pkg.id}`} className="group relative flex min-h-72 overflow-hidden rounded-[1.75rem] bg-ocean-900 text-white">
       {pkg.coverImageUrl && (
         <Image src={pkg.coverImageUrl} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover opacity-60 transition duration-700 group-hover:scale-105" />
       )}

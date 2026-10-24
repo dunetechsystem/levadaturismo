@@ -32,7 +32,7 @@ export function QuoteBox({ phone, name, days }: { phone: string; name: string; d
           <Counter label="Adultos" value={adults} onChange={setAdults} min={1} max={40} />
           <Counter label="Crianças" hint="Até 11 anos" value={kids} onChange={setKids} max={20} />
         </div>
-        <a href={whatsappUrl(phone, message)} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-4 font-bold text-white shadow-lg shadow-[#25D366]/30 hover:bg-[#1ebe5b]">
+        <a href={whatsappUrl(phone, message)} data-lead={`roteiro ${name}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-4 font-bold text-white shadow-lg shadow-[#25D366]/30 hover:bg-[#1ebe5b]">
           <WhatsAppIcon /> Pedir orçamento
         </a>
         <p className="text-center text-xs text-ocean-950/50">Hospedagem, transfer e passeios ajustados à sua data.</p>

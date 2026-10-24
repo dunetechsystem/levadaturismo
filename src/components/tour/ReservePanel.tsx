@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { CalendarCheck, Loader2, TriangleAlert } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CalendarCheck, Check, Loader2, TriangleAlert } from "lucide-react";
 import { useDayRules } from "@/lib/availability";
 import { itemKey, useCart, type CartItem } from "@/lib/cart";
 import { isFullDayTour, longDate, money, perUnit, todayISO, unitCount, unitLabel, whatsappUrl } from "@/lib/format";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Counter } from "@/components/ui/Counter";
 import { WhatsAppIcon } from "@/components/ui/Icons";
+import { site } from "@/config/site";
 import { cn } from "@/lib/cn";
+import { track } from "@/lib/track";
 
 type Base = Omit<CartItem, "date" | "seats" | "infants">;
 
@@ -22,6 +24,7 @@ export function ReservePanel({ base, phone }: { base: Base; phone: string }) {
   const [date, setDate] = useState(current?.date ?? "");
   const [seats, setSeats] = useState(current?.seats ?? 1);
   const [infants, setInfants] = useState(current?.infants ?? 0);
+  useEffect(() => track("ViewContent", { value: base.unitPrice, item: base.title, id: base.id }), [base.id, base.title, base.unitPrice]);
   const rules = useDayRules({ kind: base.kind, id: base.id, trek: base.trek });
   const vehicle = !!base.saleUnit && base.saleUnit !== "PESSOA";
   const error = rules.dateError(date, seats);
@@ -101,6 +104,7 @@ export function ReservePanel({ base, phone }: { base: Base; phone: string }) {
           disabled={!ok}
           onClick={() => {
             upsert({ ...base, date, seats, infants: base.allowInfants ? infants : 0 });
+            track("AddToCart", { value: total, item: base.title, id: base.id });
             setOpen(true);
           }}
           className="w-full rounded-full bg-ocean-600 py-4 font-bold text-white shadow-lg shadow-ocean-600/25 transition hover:bg-ocean-700 disabled:opacity-40 disabled:shadow-none"
@@ -109,6 +113,8 @@ export function ReservePanel({ base, phone }: { base: Base; phone: string }) {
         </button>
         <a
           href={ok ? whatsappUrl(phone, message) : undefined}
+          data-lead={base.title}
+          data-value={total}
           target="_blank"
           rel="noreferrer"
           aria-disabled={!ok}
@@ -116,6 +122,13 @@ export function ReservePanel({ base, phone }: { base: Base; phone: string }) {
         >
           <WhatsAppIcon size={18} /> Perguntar no WhatsApp
         </a>
+        <ul className="grid gap-1.5 pt-1 text-xs text-ocean-950/60">
+          {["Busca na porta da sua hospedagem", "Paga só depois que a gente confirma a vaga", `Agência Cadastur · família guiando desde ${site.since}`].map((t) => (
+            <li key={t} className="flex items-center gap-2">
+              <Check size={14} className="shrink-0 text-ocean-500" /> {t}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

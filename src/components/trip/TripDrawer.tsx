@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BedDouble, CarFront, Compass, Trash2 } from "lucide-react";
@@ -7,6 +8,7 @@ import { itemKey, useCart, useCartItems, useHydrated } from "@/lib/cart";
 import { lodgingLines, transferLines, tripMessage, useTrip } from "@/lib/trip";
 import { longDate, money, unitCount, whatsappUrl } from "@/lib/format";
 import { Drawer } from "@/components/ui/Drawer";
+import { track } from "@/lib/track";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 
 /** "Minha viagem": passeios do DunasTour + transfer + hospedagem, finalizados numa mensagem só. */
@@ -21,6 +23,12 @@ export function TripDrawer({ phone }: { phone: string }) {
   const total = sorted.reduce((s, i) => s + i.unitPrice * i.seats, 0);
   const empty = !sorted.length && !transfer && !lodging;
   const close = () => setOpen(false);
+
+  // Abriu a viagem com algo dentro = começou a finalizar (público de remarketing de quem não mandou).
+  useEffect(() => {
+    if (open && !empty) track("InitiateCheckout", { value: total || undefined, item: "viagem" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   return (
     <Drawer
@@ -38,6 +46,8 @@ export function TripDrawer({ phone }: { phone: string }) {
             )}
             <a
               href={whatsappUrl(phone, tripMessage(sorted, transfer, lodging))}
+              data-lead="viagem"
+              data-value={total}
               target="_blank"
               rel="noreferrer"
               className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-4 font-bold text-white shadow-lg shadow-[#25D366]/30 transition hover:bg-[#1ebe5b]"

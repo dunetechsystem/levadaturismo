@@ -5,7 +5,10 @@ import { PhotoWall } from "@/components/tour/PhotoWall";
 import { mixGallery } from "@/lib/local-photos";
 
 export const revalidate = 300;
-export const metadata: Metadata = { title: "Galeria" };
+export const metadata: Metadata = {
+  title: "Galeria",
+  description: "Fotos e vídeos dos passeios da Levada Turismo: Lagoa Azul, Lagoa Bonita, Atins, Pequenos Lençóis e Rio Preguiças.",
+};
 
 
 export default async function GalleryPage() {

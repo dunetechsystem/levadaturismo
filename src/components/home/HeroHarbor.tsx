@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Droplets, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, Droplets, ShieldCheck, Star, Sun } from "lucide-react";
 import { site } from "@/config/site";
 import { Waves } from "@/components/ui/Waves";
+import { WhatsAppIcon } from "@/components/ui/Icons";
+import { money, whatsappUrl } from "@/lib/format";
 import { Porthole } from "./Porthole";
 
 /**
  * Abertura: texto à esquerda e, à direita, uma escotilha redonda (o selo da marca) com as fotos dos
  * passeios passando. Cartões flutuantes trazem o nível das lagoas e a temperatura de hoje.
+ * Quem chega de anúncio vê logo o preço de entrada, a nota e o WhatsApp.
  */
 export function HeroHarbor({
   images,
@@ -15,9 +18,15 @@ export function HeroHarbor({
   lagoonLevel,
   temperature,
   cadasturUrl,
+  minPrice,
+  rating,
+  phone,
 }: {
   images: string[];
   tourCount: number;
+  minPrice: number | null;
+  rating: { average: number; count: number } | null;
+  phone: string;
   lagoonLevel: number | null;
   temperature: number | null;
   cadasturUrl: string | null;
@@ -31,19 +40,31 @@ export function HeroHarbor({
             <span className="size-2 rounded-full bg-ocean-500" /> {site.city}
           </p>
           <h1 className="mt-6 text-balance font-display text-5xl leading-[0.98] font-semibold text-ocean-950 sm:text-6xl lg:text-7xl">
-            Levando vidas aos <em className="text-ocean-500">Lençóis</em> desde {site.since}
+            Passeios nos <em className="text-ocean-500">Lençóis Maranhenses</em> com quem é daqui
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-ocean-950/65">
-            Uma família de Barreirinhas cuidando da sua viagem inteira: os passeios pelas dunas e lagoas, o transfer desde São Luís e a pousada certa
-            pra descansar.
+            Uma família de Barreirinhas guiando no parque desde {site.since}: passeios pelas dunas e lagoas com busca no hotel, transfer desde São Luís
+            e a pousada certa pra descansar.
+            {minPrice != null && (
+              <>
+                {" "}
+                Passeios a partir de <strong className="text-ocean-950">{money(minPrice)}</strong> por pessoa.
+              </>
+            )}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/passeios" className="group flex items-center gap-2 rounded-full bg-ocean-600 px-7 py-4 font-bold text-white shadow-xl shadow-ocean-600/30 transition hover:bg-ocean-700">
               Ver os {tourCount > 0 ? tourCount : ""} passeios <ArrowRight size={18} className="transition group-hover:translate-x-1" />
             </Link>
-            <Link href="/roteiros" className="rounded-full bg-white px-7 py-4 font-bold text-ocean-800 ring-1 ring-ocean-900/15 transition hover:ring-ocean-500">
-              Roteiros de vários dias
-            </Link>
+            <a
+              href={whatsappUrl(phone, "Olá, Levada Turismo! Quero ajuda pra montar minha viagem aos Lençóis.")}
+              data-lead="hero"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 rounded-full bg-white px-7 py-4 font-bold text-[#128C4B] ring-1 ring-ocean-900/15 transition hover:ring-[#25D366]"
+            >
+              <WhatsAppIcon size={18} /> Montar minha viagem
+            </a>
           </div>
           <dl className="mt-10 flex flex-wrap gap-x-8 gap-y-4 text-sm">
             <div>
@@ -51,9 +72,17 @@ export function HeroHarbor({
               <dd className="font-display text-2xl font-semibold text-ocean-800">{site.since}</dd>
             </div>
             <div>
-              <dt className="text-ocean-950/50">Atendimento</dt>
-              <dd className="font-display text-2xl font-semibold text-ocean-800">Família</dd>
+              <dt className="text-ocean-950/50">Viajantes atendidos</dt>
+              <dd className="font-display text-2xl font-semibold text-ocean-800">{site.stats[1].value}</dd>
             </div>
+            {rating && (
+              <div>
+                <dt className="text-ocean-950/50">{rating.count} avaliações</dt>
+                <dd className="flex items-center gap-1.5 font-display text-2xl font-semibold text-ocean-800">
+                  <Star size={20} className="fill-sun-400 text-sun-400" /> {rating.average.toFixed(1).replace(".", ",")}
+                </dd>
+              </div>
+            )}
             {cadasturUrl && (
               <a href={cadasturUrl} target="_blank" rel="noreferrer" className="group">
                 <dt className="text-ocean-950/50">Registro oficial</dt>

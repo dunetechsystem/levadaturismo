@@ -16,6 +16,8 @@ export interface TrekDeparture {
 
 export interface TourCard {
   id: string;
+  /** Preenchido pelo site (lib/dunastour/server), não vem da API. */
+  slug?: string;
   title: string;
   coverImageUrl: string | null;
   basePrice: number;
@@ -57,6 +59,8 @@ export interface TourDetail extends Omit<TourCard, "coverImageUrl"> {
 
 export interface PackageCard {
   id: string;
+  /** Preenchido pelo site (lib/dunastour/server), não vem da API. */
+  slug?: string;
   title: string;
   coverImageUrl: string | null;
   agencyName: string;

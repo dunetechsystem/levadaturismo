@@ -6,6 +6,7 @@ import { site } from "@/config/site";
 import { useCart } from "@/lib/cart";
 import { transferLines, useTrip, type TransferRequest } from "@/lib/trip";
 import { todayISO, whatsappUrl } from "@/lib/format";
+import { track } from "@/lib/track";
 import { Counter } from "@/components/ui/Counter";
 import { WhatsAppIcon } from "@/components/ui/Icons";
 import { Field, inputCls } from "./fields";
@@ -68,6 +69,7 @@ export function TransferForm({ phone }: { phone: string }) {
           disabled={!ok}
           onClick={() => {
             setTransfer(t);
+            track("AddToCart", { item: "transfer" });
             openTrip(true);
           }}
           className="flex items-center justify-center gap-2 rounded-full bg-ocean-600 py-3.5 font-bold text-white transition hover:bg-ocean-700 disabled:opacity-40"
@@ -76,6 +78,7 @@ export function TransferForm({ phone }: { phone: string }) {
         </button>
         <a
           href={ok ? whatsappUrl(phone, message) : undefined}
+          data-lead="transfer"
           target="_blank"
           rel="noreferrer"
           aria-disabled={!ok}
