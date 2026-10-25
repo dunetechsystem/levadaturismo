@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Backpack, BadgeCheck, CarFront, Check, Clock, ShieldAlert, Sunrise, Users } from "lucide-react";
 import { site } from "@/config/site";
-import { findBySlug, getAgency, getReviews, getTour, getTours } from "@/lib/dunastour/server";
+import { findBySlug, getAgency, getReviews, getTour, getTourReviews, getTours } from "@/lib/dunastour/server";
 import { tourBase } from "@/lib/booking-base";
 import { agencyInfo } from "@/lib/agency-info";
 import { displayTitle, duration, perUnit, tourUnitPrice, unitLabel } from "@/lib/format";
@@ -14,6 +14,7 @@ import { Checklist, Prose } from "@/components/tour/TextBlocks";
 import { TicketCard } from "@/components/tour/TicketCard";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { ReviewsSnippet } from "@/components/tour/ReviewsSnippet";
+import { TourReviewsSummary } from "@/components/tour/TourReviews";
 import { MobileReserveBar } from "@/components/tour/MobileReserveBar";
 
 export const revalidate = 300;
@@ -45,6 +46,7 @@ export default async function TourPage({ params }: PageProps<"/passeios/[id]">) 
   const { id } = await params;
   const [{ tour, tours, card }, agency, reviews] = await Promise.all([resolveTour(id), getAgency(), getReviews()]);
   if (!tour) notFound();
+  const tourReviews = await getTourReviews(tour.id);
   if (card?.slug && card.slug !== decodeURIComponent(id)) permanentRedirect(`/passeios/${card.slug}`);
   const title = displayTitle(tour.title);
   const cover = tour.mediaUrls[0] ?? card?.coverImageUrl ?? null;
@@ -134,6 +136,8 @@ export default async function TourPage({ params }: PageProps<"/passeios/[id]">) 
             </div>
           )}
 
+          {/* Avaliações do DunasTour com fotos: avatares + estrelas e o botão pra página com comentários e fotos. */}
+          <TourReviewsSummary reviews={tourReviews} href={`/passeios/${card?.slug ?? id}/avaliacoes`} />
           <ReviewsSnippet items={reviewList} summary={summary} tourTitle={title} />
 
           {tour.riskType && (
