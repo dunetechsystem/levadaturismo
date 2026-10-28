@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Clock, Mountain } from "lucide-react";
+import { ArrowUpRight, Clock, Mountain, Star } from "lucide-react";
 import type { PackageCard, TourCard } from "@/lib/dunastour/types";
 import { displayTitle, duration, money, perUnit, tourUnitPrice } from "@/lib/format";
 import { tourKind, TOUR_KINDS } from "@/lib/tour-kind";
@@ -46,6 +46,11 @@ export function TicketCard({ tour, priority = false, wide = false }: { tour: Tou
             {displayTitle(tour.title)}
           </h3>
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ocean-950/55">
+            {tour.ratingCount > 0 && (
+              <span className="flex items-center gap-1.5 font-semibold text-ocean-950/75">
+                <Star size={14} className="fill-sun-400 text-sun-400" /> {tour.ratingAvg.toFixed(1).replace(".", ",")} ({tour.ratingCount})
+              </span>
+            )}
             {tour.durationMinutes > 0 && (
               <span className="flex items-center gap-1.5">
                 <Clock size={14} /> {duration(tour.durationMinutes)}
