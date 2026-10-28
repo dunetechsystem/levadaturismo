@@ -7,7 +7,9 @@ export const site = {
   name: "Levada Turismo",
   tagline: "Levando vidas aos Lençóis",
   city: "Barreirinhas · Maranhão",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.NODE_ENV === "production" ? "https://levadaturismo.com" : "http://localhost:3000"),
 
   /** Usados se a API não devolver telefone/Instagram da agência. */
   fallbackWhatsapp: "+55 (98) 99133-3370",
