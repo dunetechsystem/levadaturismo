@@ -1,5 +1,5 @@
 import { after, type NextRequest } from "next/server";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getPackages, getTours } from "@/lib/dunastour/server";
 
 /**
@@ -13,11 +13,13 @@ export async function POST(req: NextRequest) {
   const given = req.headers.get("x-revalidate-secret") ?? req.nextUrl.searchParams.get("secret");
   if (!secret || given !== secret) return Response.json({ message: "Não autorizado" }, { status: 401 });
   revalidateTag("dunastour", { expire: 0 });
+  // O sitemap gerado no build (sem acesso à API) não fica marcado com a tag; expira pelo caminho.
+  revalidatePath("/sitemap.xml");
 
   const origin = req.nextUrl.origin;
   after(async () => {
     const [tours, packages] = await Promise.all([getTours(), getPackages()]);
-    const paths = ["/", "/passeios", "/galeria", ...tours.map((t) => `/passeios/${t.slug}`), ...packages.map((p) => `/pacotes/${p.slug}`)];
+    const paths = ["/", "/passeios", "/galeria", "/sitemap.xml", ...tours.map((t) => `/passeios/${t.slug}`), ...packages.map((p) => `/pacotes/${p.slug}`)];
     await Promise.allSettled(paths.map((p) => fetch(`${origin}${p}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) })));
   });
 
